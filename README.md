@@ -61,7 +61,7 @@ and the Minkowski distance order `p`.
 - **KNN-2 (Manhattan distance, kd-tree) is the best speed/accuracy trade-off:** only 0.5 pp
   lower accuracy than KNN-1 but ≈ 4× faster at inference — attractive for resource-constrained IoT gateways.
 - Increasing `k` and the Minkowski order `p` steadily reduces accuracy; the brute-force search
-  with `p = 4` is ~80× slower than the kd-tree configuration, showing that the search
+  with `p = 4` is ~340× slower at inference than the kd-tree configuration, showing that the search
   algorithm and distance metric dominate inference cost.
 
 ### Limitations and future work
