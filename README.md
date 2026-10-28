@@ -2,7 +2,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Muhammad-Nouman-s/Artificial-intelligence-and-Machine-Learning/blob/main/Exploring%20K-Nearest%20Neighbour%20Hyperparameters%20for%20Enhances%20IoT%20Intrusion%20Detection.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Muhammad-Nouman-s/Artificial-intelligence-and-Machine-Learning/blob/main/Exploring%20K-Nearest%20Neighbour%20Hyperparameters%20for%20Enhanced%20IoT%20Intrusion%20Detection.ipynb)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 Machine-learning experiments for **IoT security**. The current project studies how the
@@ -13,7 +13,7 @@ hyperparameters of the **k-nearest neighbours (KNN)** classifier affect a multi-
 
 ## Project: KNN Hyperparameters for IoT Intrusion Detection
 
-**Notebook:** [`Exploring K-Nearest Neighbour Hyperparameters for Enhances IoT Intrusion Detection.ipynb`](Exploring%20K-Nearest%20Neighbour%20Hyperparameters%20for%20Enhances%20IoT%20Intrusion%20Detection.ipynb)
+**Notebook:** [`Exploring K-Nearest Neighbour Hyperparameters for Enhanced IoT Intrusion Detection.ipynb`](Exploring%20K-Nearest%20Neighbour%20Hyperparameters%20for%20Enhanced%20IoT%20Intrusion%20Detection.ipynb)
 
 ### Objective
 
@@ -87,8 +87,8 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-The notebook was developed on **Google Colab** (it mounts Google Drive in the first cells).
-To run locally, skip the Drive/`%cd` cells and point `pd.read_csv(...)` at your local copy of the dataset.
+Place `ToN_IoT_Test_Network.csv` in a `data/` folder (or set `DATA_PATH` in the notebook).
+On **Google Colab**, upload the file or mount Google Drive and point `DATA_PATH` to it.
 
 > ⚠️ KNN-4 (`algorithm='brute'`, `p=4`) takes several hours to predict on the full split;
 > skip it or reduce the test size for a quick run.
@@ -97,7 +97,8 @@ To run locally, skip the Drive/`%cd` cells and point `pd.read_csv(...)` at your 
 
 ```
 .
-├── Exploring K-Nearest Neighbour Hyperparameters for Enhances IoT Intrusion Detection.ipynb
+├── data/                     # dataset goes here (git-ignored)
+├── Exploring K-Nearest Neighbour Hyperparameters for Enhanced IoT Intrusion Detection.ipynb
 ├── requirements.txt
 ├── LICENSE
 └── README.md
