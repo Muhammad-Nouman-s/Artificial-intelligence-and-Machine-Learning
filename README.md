@@ -75,8 +75,6 @@ edge: Network TON_IoT datasets," Sustainable Cities and Society, vol. 72, 102994
 ## Author
 
 Muhammad Nouman, PhD researcher at the Telematics Lab, Politecnico di Bari.
-[Website](https://muhammad-nouman-s.github.io/) |
-[Google Scholar](https://scholar.google.com/citations?user=ebfBz34AAAAJ) |
-[ORCID](https://orcid.org/0000-0003-4233-5506)
+[Website](https://muhammad-nouman-s.github.io/)
 
 Code is released under the [MIT License](LICENSE).
