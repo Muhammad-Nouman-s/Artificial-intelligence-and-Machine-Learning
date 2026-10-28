@@ -1,124 +1,82 @@
 # Artificial Intelligence and Machine Learning
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Muhammad-Nouman-s/Artificial-intelligence-and-Machine-Learning/blob/main/Exploring%20K-Nearest%20Neighbour%20Hyperparameters%20for%20Enhanced%20IoT%20Intrusion%20Detection.ipynb)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+Machine learning experiments on IoT security. The current notebook looks at how the
+hyperparameters of a k-nearest neighbours (KNN) classifier affect a multi-class intrusion
+detection system trained on the TON_IoT network dataset.
 
-Machine-learning experiments for **IoT security**. The current project studies how the
-hyperparameters of the **k-nearest neighbours (KNN)** classifier affect a multi-class
-**intrusion detection system (IDS)** trained on the **TON_IoT** network dataset.
+Notebook: [Exploring K-Nearest Neighbour Hyperparameters for Enhanced IoT Intrusion Detection](Exploring%20K-Nearest%20Neighbour%20Hyperparameters%20for%20Enhanced%20IoT%20Intrusion%20Detection.ipynb)
+([open in Colab](https://colab.research.google.com/github/Muhammad-Nouman-s/Artificial-intelligence-and-Machine-Learning/blob/main/Exploring%20K-Nearest%20Neighbour%20Hyperparameters%20for%20Enhanced%20IoT%20Intrusion%20Detection.ipynb))
 
----
+## Dataset
 
-## Project: KNN Hyperparameters for IoT Intrusion Detection
+I used the network traffic file of the [TON_IoT datasets](https://research.unsw.edu.au/projects/toniot-datasets)
+from UNSW Canberra (`ToN_IoT_Test_Network.csv`, 461,043 records, 45 features, 10 classes:
+normal, backdoor, ddos, dos, injection, mitm, password, ransomware, scanning, xss).
 
-**Notebook:** [`Exploring K-Nearest Neighbour Hyperparameters for Enhanced IoT Intrusion Detection.ipynb`](Exploring%20K-Nearest%20Neighbour%20Hyperparameters%20for%20Enhanced%20IoT%20Intrusion%20Detection.ipynb)
+The data is heavily imbalanced towards the normal class. Because of time and compute limits,
+I kept 30,000 randomly chosen normal records and left the other classes as they are, which gives
+191,043 records in total.
 
-### Objective
+The dataset is not included here. Download it from the link above and put the CSV in a `data/`
+folder, or change `DATA_PATH` in the notebook.
 
-Quantify the trade-off between detection quality and computational cost when changing the
-number of neighbours `k`, the weighting scheme, the neighbour-search algorithm, the leaf size
-and the Minkowski distance order `p`.
+## Method
 
-### Dataset
+1. Drop identifier columns (`ts`, `src_ip`, `src_port`, `dst_ip`, `dst_port`) and label-encode
+   the target and the categorical features.
+2. Look at feature importance (decision tree and random forest) and the correlation matrix.
+3. Balance the classes with ADASYN, then random under-sampling (29,368 samples per class).
+4. Reduce to 20 components with PCA.
+5. Split 70/30 into train and test (`random_state=42`).
+6. Train four KNN models and compare accuracy, macro precision/recall, macro and micro F1,
+   MCC and prediction time.
 
-| Item | Details |
-|---|---|
-| Source | [TON_IoT datasets, UNSW Canberra](https://research.unsw.edu.au/projects/toniot-datasets) — network traffic subset (`ToN_IoT_Test_Network.csv`) |
-| Raw size | 461,043 records × 45 features |
-| Classes (10) | `normal`, `backdoor`, `ddos`, `dos`, `injection`, `mitm`, `password`, `ransomware`, `scanning`, `xss` |
-| Customisation | The `normal` class is randomly down-sampled to 30,000 records (other classes unchanged) → 191,043 records |
+## Results
 
-> The dataset is **not** included in this repository. Download it from the official TON_IoT
-> page and place `ToN_IoT_Test_Network.csv` in the working directory (or your Google Drive).
+Test set results:
 
-### Pipeline
-
-1. **Pre-processing** – drop identifier columns (`ts`, `src_ip`, `src_port`, `dst_ip`, `dst_port`),
-   label-encode the target and categorical features.
-2. **Feature analysis** – decision-tree and random-forest feature importance
-   (`SelectFromModel`), correlation heat-map.
-3. **Class balancing** – ADASYN over-sampling followed by random under-sampling
-   (29,368 samples per class).
-4. **Dimensionality reduction** – PCA to 20 components.
-5. **Split** – 70 % train / 30 % test (`random_state=42`).
-6. **Modelling** – four KNN configurations, evaluated with accuracy, macro precision,
-   macro recall, macro/micro F1, Matthews correlation coefficient (MCC) and prediction time.
-
-### Results (test set)
-
-| Model | k | Weights | Algorithm | Leaf size | p | Accuracy | Macro F1 | MCC | Test prediction time |
+| Model | k | Weights | Algorithm | Leaf size | p | Accuracy | Macro F1 | MCC | Prediction time (test) |
 |---|---:|---|---|---:|---:|---:|---:|---:|---:|
-| **KNN-1** | 3 | distance | auto | 30 | 2 (Euclidean) | **0.9028** | **0.9030** | **0.8922** | 108 s |
-| KNN-2 | 5 | uniform | kd_tree | 50 | 1 (Manhattan) | 0.8973 | 0.8977 | 0.8861 | **25 s** |
-| KNN-3 | 9 | distance | ball_tree | 40 | 3 | 0.8874 | 0.8874 | 0.8752 | 200 s |
-| KNN-4 | 11 | uniform | brute | 20 | 4 | 0.8381 | 0.8373 | 0.8206 | 8,733 s |
+| KNN 1 | 3 | distance | auto | 30 | 2 | 0.9028 | 0.9030 | 0.8922 | 108 s |
+| KNN 2 | 5 | uniform | kd_tree | 50 | 1 | 0.8973 | 0.8977 | 0.8861 | 25 s |
+| KNN 3 | 9 | distance | ball_tree | 40 | 3 | 0.8874 | 0.8874 | 0.8752 | 200 s |
+| KNN 4 | 11 | uniform | brute | 20 | 4 | 0.8381 | 0.8373 | 0.8206 | 8,733 s |
 
-### Key findings
+KNN 1 (k = 3, distance weighting, Euclidean) gave the best scores. KNN 2 (k = 5, Manhattan,
+kd-tree) was only about half a point lower in accuracy but around four times faster at
+prediction, so it is the better choice when inference time matters, for example on an IoT
+gateway. Larger k and higher p made results worse, and the brute-force search with p = 4 was
+by far the slowest (about 340 times slower than KNN 2).
 
-- **Small `k` with distance weighting (KNN-1) gives the best detection quality** (≈ 90.3 % accuracy, MCC 0.89).
-- **KNN-2 (Manhattan distance, kd-tree) is the best speed/accuracy trade-off:** only 0.5 pp
-  lower accuracy than KNN-1 but ≈ 4× faster at inference — attractive for resource-constrained IoT gateways.
-- Increasing `k` and the Minkowski order `p` steadily reduces accuracy; the brute-force search
-  with `p = 4` is ~340× slower at inference than the kd-tree configuration, showing that the search
-  algorithm and distance metric dominate inference cost.
+## Limitations
 
-### Limitations and future work
+- Resampling and PCA are done before the train/test split, so some synthetic samples can end up
+  in the test set and the scores are probably a bit optimistic. Fitting these steps on the
+  training data only (inside cross-validation) would give a fairer estimate.
+- Features are label-encoded and not scaled before PCA and KNN. One-hot encoding and
+  standardisation may change the results.
+- KNN 4 takes a few hours to predict on the full test set. Skip it for a quick run.
 
-- Resampling (ADASYN / under-sampling) and PCA are applied **before** the train/test split, so
-  synthetic samples can leak into the test set and the reported scores may be optimistic.
-  A stricter protocol would fit resampling and PCA on the training fold only
-  (e.g. an `imblearn.pipeline.Pipeline` inside stratified k-fold cross-validation).
-- Categorical features are label-encoded; one-hot or target encoding may suit distance-based models better.
-- Features are not standardised before PCA/KNN; adding `StandardScaler` is expected to change the ranking.
-- Planned: systematic grid / Bayesian search over `k` and `p`, per-class confusion matrices,
-  and comparison with tree ensembles and neural models.
-
----
-
-## Getting started
+## Running the notebook
 
 ```bash
-git clone https://github.com/Muhammad-Nouman-s/Artificial-intelligence-and-Machine-Learning.git
-cd Artificial-intelligence-and-Machine-Learning
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 jupyter notebook
 ```
 
-Place `ToN_IoT_Test_Network.csv` in a `data/` folder (or set `DATA_PATH` in the notebook).
-On **Google Colab**, upload the file or mount Google Drive and point `DATA_PATH` to it.
+The notebook was first written in Google Colab. It also runs locally once `DATA_PATH` points to
+the CSV file.
 
-> ⚠️ KNN-4 (`algorithm='brute'`, `p=4`) takes several hours to predict on the full split;
-> skip it or reduce the test size for a quick run.
+## Reference
 
-## Repository structure
-
-```
-.
-├── data/                     # dataset goes here (git-ignored)
-├── Exploring K-Nearest Neighbour Hyperparameters for Enhanced IoT Intrusion Detection.ipynb
-├── requirements.txt
-├── LICENSE
-└── README.md
-```
-
-## Citation
-
-If you use this work, please cite the TON_IoT dataset:
-
-> N. Moustafa, “A new distributed architecture for evaluating AI-based security systems at the
-> edge: Network TON_IoT datasets,” *Sustainable Cities and Society*, vol. 72, 102994, 2021.
+N. Moustafa, "A new distributed architecture for evaluating AI-based security systems at the
+edge: Network TON_IoT datasets," Sustainable Cities and Society, vol. 72, 102994, 2021.
 
 ## Author
 
-**Muhammad Nouman** — PhD Researcher, Telematics Lab, Politecnico di Bari
-[Website](https://muhammad-nouman-s.github.io/) ·
-[Google Scholar](https://scholar.google.com/citations?user=ebfBz34AAAAJ) ·
-[ORCID](https://orcid.org/0000-0003-4233-5506) ·
-[LinkedIn](https://www.linkedin.com/in/muhammadnoumanml)
+Muhammad Nouman, PhD researcher at the Telematics Lab, Politecnico di Bari.
+[Website](https://muhammad-nouman-s.github.io/) |
+[Google Scholar](https://scholar.google.com/citations?user=ebfBz34AAAAJ) |
+[ORCID](https://orcid.org/0000-0003-4233-5506)
 
-## License
-
-Code is released under the [MIT License](LICENSE). The TON_IoT dataset is subject to its own licence terms.
+Code is released under the [MIT License](LICENSE).
